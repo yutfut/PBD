@@ -1,16 +1,58 @@
-version: '3'
+version: '3.7'
 
 services:
-  db:
-    image: postgres
-    restart: always
+#  postgresql:
+#    image: postgres
+#    restart: always
+#    environment:
+#      POSTGRES_DB: example
+#      POSTGRES_USER: example
+#      POSTGRES_PASSWORD: example
+#      # PGDATA: "/var/lib/postgresql/data/pgdata"
+#    ports:
+#      - '5432:5432'
+#    # volumes:
+#      # - ./1_lab/init_db/:/docker-entrypoint-initdb.d/
+#      # - .:/var/lib/postgresql/data/`
+
+#  cassandra:
+#    image: cassandra:latest
+#    container_name: cassandra1
+#    ports:
+#      - "9042:9042"
+
+  cassandra:
+    image: bitnami/cassandra:3.11.10-debian-10-r13
+    hostname: cassandra
+    networks:
+      default:
+        ipv4_address: 10.6.0.11
+    # ports:
+    #   - 9042:9042 # CQL
     environment:
-      POSTGRES_DB: example
-      POSTGRES_USER: example
-      POSTGRES_PASSWORD: example
-      # PGDATA: "/var/lib/postgresql/data/pgdata"
+      CASSANDRA_SEEDS: 10.6.0.11
+      CASSANDRA_USER: cassandra
+      CASSANDRA_PASSWORD: cassandra
+      CASSANDRA_PASSWORD_SEEDER: "yes"
+    restart: unless-stopped
+
+  cassandra-web:
+    build: ./
+    image: dcagatay/cassandra-web:latest
+    depends_on:
+      - cassandra
     ports:
-      - '5432:5432'
-    # volumes:
-      # - ./1_lab/init_db/:/docker-entrypoint-initdb.d/
-      # - .:/var/lib/postgresql/data/`
+      - 3000:3000
+    environment:
+      CASSANDRA_HOST_IPS: 10.6.0.11
+      CASSANDRA_PORT: 9042
+      CASSANDRA_USER: cassandra
+      CASSANDRA_PASSWORD: cassandra
+    restart: unless-stopped
+
+  networks:
+    default:
+      driver: bridge
+      ipam:
+        config:
+          - subnet: 10.6.0.0/24
