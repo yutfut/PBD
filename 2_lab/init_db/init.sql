@@ -53,9 +53,9 @@ CREATE TYPE lab2.send_task_status AS ENUM ('success', 'fail');
 CREATE TABLE lab2.send_task (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id integer NOT NULL,
-    foreign key (user_id) references lab1.users (id),
+    foreign key (user_id) references lab2.users (id),
     task_id integer NOT NULL,
-    foreign key (task_id) references lab1.tasks (id),
+    foreign key (task_id) references lab2.tasks (id),
     check_time float,
     build_time float,
     check_result int,
@@ -71,17 +71,17 @@ CREATE TABLE lab2.send_task (
 CREATE TABLE lab2.likes (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id integer NOT NULL,
-    foreign key (user_id) references lab1.users (id),
+    foreign key (user_id) references lab2.users (id),
     task_id integer NOT NULL,
-    foreign key (task_id) references lab1.tasks (id)
+    foreign key (task_id) references lab2.tasks (id)
 );
 
 CREATE TABLE lab2.difficulty_task (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id integer NOT NULL,
-    foreign key (user_id) references lab1.users (id),
+    foreign key (user_id) references lab2.users (id),
     task_id integer NOT NULL,
-    foreign key (task_id) references lab1.tasks (id),
+    foreign key (task_id) references lab2.tasks (id),
     difficulty int NOT NULL
 );
 
@@ -198,3 +198,38 @@ $$
 LANGUAGE plpgsql;
 
 select get_user(1);
+
+-- рекурсивный
+
+WITH RECURSIVE r AS (
+    -- стартовая часть рекурсии
+    SELECT
+        1 AS i,
+        1 AS factorial
+
+    UNION
+
+    -- рекурсивная часть
+    SELECT
+        i+1 AS i,
+        factorial * (i+1) as factorial
+    FROM r
+    WHERE i < 10
+)
+SELECT * FROM r;
+
+-- LIMIT
+
+select * from lab2.users Limit 3;
+
+-- returning
+
+INSERT INTO lab2.users (username, password, cold_start) VALUES ('username', 'password', false) RETURNING (id, username, password, cold_start);
+
+-- ранжированние
+
+-- курсор
+
+-- оконные функции
+
+-- встроенная функция

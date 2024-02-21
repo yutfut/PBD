@@ -1,6 +1,7 @@
 version: '3.7'
 
 services:
+
 #  postgresql:
 #    image: postgres
 #    restart: always
@@ -17,8 +18,22 @@ services:
 
   cassandra:
     image: cassandra:latest
+#    image: bitnami/cassandra:latest
     restart: always
     volumes:
-      - ./3_lab/init_cql:/scripts/
+#      - ./3_lab/init_cql:/scripts/
+      - ./3_lab/init_cql:/docker-entrypoint-initdb.d
       - ./3_lab/lib:/var/lib/cassandra
       - ./3_lab/logs/:/var/log/cassandra
+    ports:
+      - '9042:9042'
+    environment:
+#      - CASSANDRA_SEEDS=cassandra
+#      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_USER=cassandra
+      - CASSANDRA_PASSWORD=cassandra
+    networks:
+      internal:
+
+networks:
+  internal:
