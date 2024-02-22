@@ -177,6 +177,25 @@ LANGUAGE plpgsql;
 -- call lab2.get_user(1);
 -- call lab2.get_user(5);
 
+-- перехват исключений
+
+create or replace FUNCTION lab2.get_user1(x int)
+    RETURNS SETOF varchar(256) AS
+$BODY$
+BEGIN
+    RETURN QUERY
+        select username from lab2.users where id=$1;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Нет такого пользователя';
+    END IF;
+    RETURN;
+END;
+$BODY$
+    LANGUAGE plpgsql;
+
+select lab2.get_user1(1);
+select lab2.get_user1(10);
+
 -- Продемонстрировать в функциях и процедурах работу условных операторов и выполнение динамического запроса.
 
 create or replace function get_user(x int)
@@ -218,6 +237,41 @@ WITH RECURSIVE r AS (
 )
 SELECT * FROM r;
 
+-- YET
+
+DROP TABLE IF EXISTS lab2.geo CASCADE;
+CREATE TABLE IF NOT EXISTS lab2.geo (
+    id int not null primary key,
+    parent_id int references lab2.geo(id),
+    name varchar(1000)
+);
+
+INSERT INTO lab2.geo (id, parent_id, name) VALUES
+(1, null, 'Планета Земля'),
+(2, 1, 'Континент Евразия'),
+(3, 1, 'Континент Северная Америка'),
+(4, 2, 'Европа'),
+(5, 4, 'Россия'),
+(6, 4, 'Германия'),
+(7, 5, 'Москва'),
+(8, 5, 'Санкт-Петербург'),
+(9, 6, 'Берлин');
+
+WITH RECURSIVE r AS (
+    SELECT id, parent_id, name
+    FROM lab2.geo
+    WHERE parent_id = 4
+
+    UNION
+
+    SELECT lab2.geo.id, lab2.geo.parent_id, lab2.geo.name
+    FROM lab2.geo
+             JOIN r
+                  ON lab2.geo.parent_id = r.id
+)
+
+SELECT * FROM r;
+
 -- LIMIT
 
 select * from lab2.users Limit 3;
@@ -226,10 +280,67 @@ select * from lab2.users Limit 3;
 
 INSERT INTO lab2.users (username, password, cold_start) VALUES ('username', 'password', false) RETURNING (id, username, password, cold_start);
 
--- ранжированние
+-- ранжированние оконные функции
+
+DROP TABLE IF EXISTS lab2.range CASCADE;
+CREATE TABLE IF NOT EXISTS lab2.range (
+id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+name text,
+price integer
+);
+
+insert into lab2.range (name, price) values
+ ('a', 1),
+ ('a', 5),
+ ('a', 6),
+ ('a', 7),
+ ('b', 8),
+ ('b', 2),
+ ('b', 3),
+ ('b', 1);
+
+SELECT id, name, price,
+       rank() OVER (PARTITION BY name ORDER BY price) --DESC
+FROM lab2.range;
 
 -- курсор
+
+CREATE OR REPLACE FUNCTION func_with_cursor_user(
+    OUT user_name varchar(256),
+    OUT pass_word varchar(256)
+)
+    RETURNS SETOF RECORD AS
+$$
+DECLARE
+    edges_cursor CURSOR FOR
+        SELECT username, password
+        FROM lab2.users;
+    edge_record RECORD;
+BEGIN
+    -- Open cursor
+    OPEN edges_cursor;
+
+    -- Fetch rows and return
+    LOOP
+        FETCH NEXT FROM edges_cursor INTO edge_record;
+        EXIT WHEN NOT FOUND;
+        user_name := edge_record.username;
+        pass_word := edge_record.password;
+        RETURN NEXT;
+    END LOOP;
+
+    -- Close cursor
+    CLOSE edges_cursor;
+END;
+$$
+    LANGUAGE PLPGSQL;
+
+select func_with_cursor_user();
 
 -- оконные функции
 
 -- встроенная функция
+
+select * from lab2.users where substring(username for 2) = 'us';
+select * from lab2.users where substring(username, '.*ern.*') <> '';
+select substring('username' from '.*ern.*');
