@@ -1,5 +1,5 @@
 DROP SCHEMA IF EXISTS lab2 CASCADE;
-CREATE SCHEMA lab2 AUTHORIZATION yutfut;
+CREATE SCHEMA lab2;
 
 DROP TABLE IF EXISTS lab2.users CASCADE;
 DROP TABLE IF EXISTS lab2.task CASCADE;
@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS lab2.send_task CASCADE;
 DROP TABLE IF EXISTS lab2.likes CASCADE;
 DROP TABLE IF EXISTS lab2.difficulty_task CASCADE;
 
-create table lab2.task
+create table lab2.tasks
 (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     name VARCHAR(256) NOT NULL,
@@ -34,11 +34,11 @@ create table lab2.task
     checker text,
     checkers text[]
 );
-
-ALTER TABLE lab2.task ADD pole1 char(10);       -- добавление столбца 
-ALTER TABLE lab2.task ALTER pole1 TYPE text;    -- изменение типа столбца
-ALTER TABLE lab2.task DROP COLUMN pole1;        -- удаление столбца
-ALTER TABLE lab2.task RENAME TO tasks;          -- переименование таблицы
+--
+-- ALTER TABLE lab2.task ADD pole1 char(10);       -- добавление столбца
+-- ALTER TABLE lab2.task ALTER pole1 TYPE text;    -- изменение типа столбца
+-- ALTER TABLE lab2.task DROP COLUMN pole1;        -- удаление столбца
+-- ALTER TABLE lab2.task RENAME TO tasks;          -- переименование таблицы
 
 CREATE TABLE lab2.users (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -191,7 +191,7 @@ BEGIN
     RETURN;
 END;
 $BODY$
-    LANGUAGE plpgsql;
+LANGUAGE plpgsql;
 
 select lab2.get_user1(1);
 select lab2.get_user1(10);
@@ -207,16 +207,17 @@ begin
 	if usern is NULL then
 		raise exception using errcode='E0001', hint='error', message='error';
 	else
-		EXECUTE format('delete from lab2.users where username = %I;', usern);
+		EXECUTE format('delete from lab2.users where username = %s;', usern);
 		return usern;
--- 		delete from lab2.users where username=usern;
--- 		exception when others then RAISE NOTICE 'перехватили ошибку';
 	end if;
 end;
 $$
 LANGUAGE plpgsql;
 
+select * from lab2.users;
+
 select get_user(1);
+select get_user(7);
 
 -- рекурсивный
 
@@ -260,7 +261,7 @@ INSERT INTO lab2.geo (id, parent_id, name) VALUES
 WITH RECURSIVE r AS (
     SELECT id, parent_id, name
     FROM lab2.geo
-    WHERE parent_id = 4
+    WHERE parent_id = 1
 
     UNION
 
@@ -280,13 +281,15 @@ select * from lab2.users Limit 3;
 
 INSERT INTO lab2.users (username, password, cold_start) VALUES ('username', 'password', false) RETURNING (id, username, password, cold_start);
 
+update lab2.users set username='name' where username='Vasya' RETURNING (id, username, password, cold_start);
+
 -- ранжированние оконные функции
 
 DROP TABLE IF EXISTS lab2.range CASCADE;
 CREATE TABLE IF NOT EXISTS lab2.range (
-id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-name text,
-price integer
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    name text,
+    price integer
 );
 
 insert into lab2.range (name, price) values
@@ -336,6 +339,8 @@ $$
     LANGUAGE PLPGSQL;
 
 select func_with_cursor_user();
+
+-- запись в файл
 
 -- оконные функции
 

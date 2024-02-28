@@ -47,7 +47,7 @@ CREATE TABLE lab1.users (
     username VARCHAR(256) NOT NULL,
     password VARCHAR(256) NOT NULL,
     cold_start BOOL NOT NULL DEFAULT false,
---     registration_date TIMESTAMP DEFAULT now() + interval '3 hours' NOT NULL
+    registration_date TIMESTAMP DEFAULT now() + interval '3 hours' NOT NULL
 );
 
 CREATE TYPE lab1.send_task_status AS ENUM ('success', 'fail');
@@ -224,6 +224,20 @@ update lab1.super_table SET ch3 = array_append(ch3, 10) where 1 = any (ch3);
 -- ) INHERITS (lab1.perent);
 
 -- CREATE TABLE lab1.perent (
+-- 	id SERIAL PRIMARY KEY,
+-- 	column1 int
+-- );
+
+-- CREATE TABLE lab1.child (
+-- 	column2 text,
+-- 	column3 text
+-- ) INHERITS (lab1.perent);
+
+-- insert into lab1.perent (id, column1) values(1,2);
+-- insert into lab1.child (id, column1, column2, column3) values(1,2,'3','4');
+
+select * from lab1.perent;
+-- select * from only lab1.perent;-- CREATE TABLE lab1.perent (
 -- 	id SERIAL PRIMARY KEY,
 -- 	column1 int
 -- );

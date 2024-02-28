@@ -2,22 +2,22 @@ version: '3.7'
 
 services:
 
-#   postgresql:
-#     image: postgres
-#     restart: always
-#     environment:
-#       POSTGRES_DB: example
-#       POSTGRES_USER: example
-#       POSTGRES_PASSWORD: example
-#       # PGDATA: "/var/lib/postgresql/data/pgdata"
-#     ports:
-#       - '5432:5432'
-#     # volumes:
-#       # - ./1_lab/init_db/:/docker-entrypoint-initdb.d/x
-#       # - .:/var/lib/postgresql/data/`
+  postgresql:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: example
+      POSTGRES_USER: example
+      POSTGRES_PASSWORD: example
+      # PGDATA: "/var/lib/postgresql/data/pgdata"
+    ports:
+      - '5432:5432'
+    # volumes:
+      # - ./1_lab/init_db/:/docker-entrypoint-initdb.d/x
+      # - .:/var/lib/postgresql/data/`
 
- cassandra:
-   image: cassandra:latest
+  cassandra:
+    image: cassandra:latest
 #    image: bitnami/cassandra:latest
 #    restart: always
 #    volumes:
@@ -26,8 +26,8 @@ services:
 #      - ./3_lab/init_cql:/docker-entrypoint-initdb.d
 #      - ./3_lab/lib:/var/lib/cassandra
 #      - ./3_lab/logs/:/var/log/cassandra
-   ports:
-     - '9042:9042'
+    ports:
+      - '9042:9042'
 #    environment:
 #      - CASSANDRA_SEEDS=cassandra
 #      - CASSANDRA_PASSWORD_SEEDER=yes
@@ -38,3 +38,11 @@ services:
 #
 # networks:
 #  internal:
+
+#     mongodb:
+#         image: mongo
+#         environment:
+#           - MONGO_INITDB_ROOT_USERNAME=admin
+#           - MONGO_INITDB_ROOT_PASSWORD=admin
+#         ports:
+#           - '27017:27017'
