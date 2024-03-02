@@ -118,7 +118,7 @@ declare count_false int;
 begin
 select count(*) into count_false FROM lab2.users WHERE cold_start=false;
 return count_false;
-end
+end;
 $$
 LANGUAGE plpgsql;
 
@@ -139,7 +139,7 @@ select get_cold_start_users(true);
 
 create or replace function get_all_users()
 returns setof int as
-$BODY$
+$$
 declare r int;
 begin
 for r in select id from lab2.users 
@@ -148,7 +148,7 @@ for r in select id from lab2.users
 	end loop;
 return;
 end
-$BODY$
+$$
 LANGUAGE plpgsql;
 
 select get_all_users();
@@ -180,8 +180,8 @@ LANGUAGE plpgsql;
 -- перехват исключений
 
 create or replace FUNCTION lab2.get_user1(x int)
-    RETURNS SETOF varchar(256) AS
-$BODY$
+RETURNS SETOF varchar(256) AS
+$$
 BEGIN
     RETURN QUERY
         select username from lab2.users where id=$1;
@@ -190,7 +190,7 @@ BEGIN
     END IF;
     RETURN;
 END;
-$BODY$
+$$
 LANGUAGE plpgsql;
 
 select lab2.get_user1(1);
@@ -218,6 +218,31 @@ select * from lab2.users;
 
 select get_user(1);
 select get_user(7);
+
+-- обработка ошибок
+
+create or replace function get_user_with_exception(x int)
+returns varchar(256) as
+$$
+declare usern varchar(256);
+begin
+	select username into usern from lab2.users where id=x;
+	if usern is NULL then
+        raise exception using errcode='E0001', hint='error', message='error';
+    else
+	    return usern;
+    end if;
+    EXCEPTION
+        WHEN sqlstate 'E0001' THEN
+            raise exception 'user with id % not found', x;
+end;
+$$
+LANGUAGE plpgsql;
+
+select * from lab2.users;
+
+select get_user_with_exception(1);
+select get_user_with_exception(7);
 
 -- рекурсивный
 
@@ -320,27 +345,35 @@ DECLARE
         FROM lab2.users;
     edge_record RECORD;
 BEGIN
-    -- Open cursor
-    OPEN edges_cursor;
+    OPEN edges_cursor;      -- Open cursor
+        LOOP                    -- Fetch rows and return
+            FETCH NEXT FROM edges_cursor INTO edge_record;
+            EXIT WHEN NOT FOUND;
+            user_name := edge_record.username;
+            pass_word := edge_record.password;
+            RETURN NEXT;
 
-    -- Fetch rows and return
-    LOOP
-        FETCH NEXT FROM edges_cursor INTO edge_record;
-        EXIT WHEN NOT FOUND;
-        user_name := edge_record.username;
-        pass_word := edge_record.password;
-        RETURN NEXT;
-    END LOOP;
-
-    -- Close cursor
-    CLOSE edges_cursor;
+        END LOOP;
+    CLOSE edges_cursor;     -- Close cursor
 END;
 $$
-    LANGUAGE PLPGSQL;
+LANGUAGE PLPGSQL;
 
 select func_with_cursor_user();
+copy (select func_with_cursor_user()) to '/tmp/query.csv' (format csv, delimiter ',');
 
--- запись в файл
+create or replace function write_to_file()
+returns int as
+$$
+    begin
+        copy (select * from lab2.users) to '/tmp/query.csv' (format csv, delimiter ',');
+        return 1;
+    end;
+$$
+language plpgsql;
+
+select write_to_file();
+
 
 -- оконные функции
 
@@ -349,3 +382,23 @@ select func_with_cursor_user();
 select * from lab2.users where substring(username for 2) = 'us';
 select * from lab2.users where substring(username, '.*ern.*') <> '';
 select substring('username' from '.*ern.*');
+
+-- запись в файл
+
+COPY (select * from lab2.users) TO '/tmp/query.csv' (format csv, delimiter ',');
+
+--динамический запрос
+
+create or replace function test(x int)
+returns int as
+$$
+    declare
+        a int;
+    begin
+        execute 'select count(*) from lab2.users where id=$1' into a using x;
+        return a;
+    end;
+$$
+language plpgsql;
+
+select test(1);

@@ -3,46 +3,31 @@ version: '3.7'
 services:
 
   postgresql:
-    image: postgres
-    restart: always
+    image: postgres:latest
     environment:
       POSTGRES_DB: example
       POSTGRES_USER: example
       POSTGRES_PASSWORD: example
-      # PGDATA: "/var/lib/postgresql/data/pgdata"
     ports:
       - '5432:5432'
-    # volumes:
-      # - ./1_lab/init_db/:/docker-entrypoint-initdb.d/x
-      # - .:/var/lib/postgresql/data/`
 
-  cassandra:
-    image: cassandra:latest
-#    image: bitnami/cassandra:latest
-#    restart: always
-#    volumes:
-#      - ./3_lab/cassandra/:/etc/cassandra/
-#      - ./3_lab/init_cql:/scripts/
-#      - ./3_lab/init_cql:/docker-entrypoint-initdb.d
-#      - ./3_lab/lib:/var/lib/cassandra
-#      - ./3_lab/logs/:/var/log/cassandra
-    ports:
-      - '9042:9042'
-#    environment:
-#      - CASSANDRA_SEEDS=cassandra
-#      - CASSANDRA_PASSWORD_SEEDER=yes
-#      - CASSANDRA_USER=cassandra
-#      - CASSANDRA_PASSWORD=cassandra
-#    networks:
-#      internal:
-#
-# networks:
-#  internal:
+#   cassandra:
+#     image: cassandra:latest
+#     ports:
+#       - '9042:9042'
 
-#     mongodb:
-#         image: mongo
-#         environment:
-#           - MONGO_INITDB_ROOT_USERNAME=admin
-#           - MONGO_INITDB_ROOT_PASSWORD=admin
-#         ports:
-#           - '27017:27017'
+#   mongodb:
+#     image: mongo:latest
+#     environment:
+#       - MONGO_INITDB_ROOT_USERNAME=admin
+#       - MONGO_INITDB_ROOT_PASSWORD=admin
+#     ports:
+#       - '27017:27017'
+
+#   neo4j:
+#     image: neo4j:latest
+#     environment:
+#       - NEO4J_AUTH=neo4j/password
+#     ports:
+#       - "7476:7474"
+#       - "7689:7687"
