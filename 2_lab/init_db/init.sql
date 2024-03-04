@@ -126,7 +126,7 @@ select count_false_cold_start();
 
 -- табличные функции inline
 
-create or replace function "get_cold_start_users"(x bool)
+create or replace function "get_cold_start_users"(x bool default true)
 returns table(id int, username VARCHAR(256)) as
 $$
 	select id, username from lab2.users where cold_start=x;
@@ -199,20 +199,20 @@ select lab2.get_user1(10);
 -- Продемонстрировать в функциях и процедурах работу условных операторов и выполнение динамического запроса.
 
 create or replace function get_user(x int)
-returns varchar(256) as
+    returns varchar(256) as
 $$
 declare usern varchar(256);
 begin
-	select username into usern from lab2.users where id=x;
-	if usern is NULL then
-		raise exception using errcode='E0001', hint='error', message='error';
-	else
-		EXECUTE format('delete from lab2.users where username = %s;', usern);
-		return usern;
-	end if;
+    select username into usern from lab2.users where id=x;
+    if usern is NULL then
+        raise exception using errcode='E0001', hint='error', message='error';
+    else
+        EXECUTE format('delete from lab2.users where username = %s;', usern);
+        return usern;
+    end if;
 end;
 $$
-LANGUAGE plpgsql;
+    LANGUAGE plpgsql;
 
 select * from lab2.users;
 
@@ -327,22 +327,44 @@ insert into lab2.range (name, price) values
  ('b', 3),
  ('b', 1);
 
+-- rank
+-- ранг текущей строки с пропусками; то же, что и row_number для первой родственной ей строки
+
 SELECT id, name, price,
-       rank() OVER (PARTITION BY name ORDER BY price) --DESC
+       rank() OVER (PARTITION BY name order by price) --DESC
+FROM lab2.range;
+
+-- row_number
+-- номер текущей строки в её разделе, начиная с 1
+
+SELECT id, name, price,
+       row_number() OVER (PARTITION BY name) --DESC
+FROM lab2.range;
+
+-- dense_rank
+
+SELECT id, name, price,
+    dense_rank() OVER (PARTITION BY id, name, price) --DESC
+FROM lab2.range;
+
+-- ntile
+-- ранжирование по целым числам от 1 до значения аргумента так, чтобы размеры групп были максимально близки
+
+SELECT id, name, price,
+    ntile(3) OVER (PARTITION BY name, price) --DESC
 FROM lab2.range;
 
 -- курсор
 
 CREATE OR REPLACE FUNCTION func_with_cursor_user(
-    OUT user_name varchar(256),
-    OUT pass_word varchar(256)
+    OUT user_name text,
+    OUT pass_word text
 )
     RETURNS SETOF RECORD AS
 $$
 DECLARE
     edges_cursor CURSOR FOR
-        SELECT username, password
-        FROM lab2.users;
+        SELECT username, password FROM lab2.users;
     edge_record RECORD;
 BEGIN
     OPEN edges_cursor;      -- Open cursor
@@ -352,12 +374,10 @@ BEGIN
             user_name := edge_record.username;
             pass_word := edge_record.password;
             RETURN NEXT;
-
         END LOOP;
     CLOSE edges_cursor;     -- Close cursor
 END;
-$$
-LANGUAGE PLPGSQL;
+$$ LANGUAGE PLPGSQL;
 
 select func_with_cursor_user();
 copy (select func_with_cursor_user()) to '/tmp/query.csv' (format csv, delimiter ',');
@@ -402,3 +422,42 @@ $$
 language plpgsql;
 
 select test(1);
+
+--
+
+select * from lab2.tasks;
+
+create or replace function return_array(x int)
+returns text[] as
+$$
+    declare
+        a text[];
+    begin
+        execute 'select public_tests from lab2.tasks where id=$1' into a using x;
+        return array_append(a, '1');
+    end;
+$$
+language plpgsql;
+
+select return_array(1);
+
+select public_tests from lab2.tasks where id=1;
+
+select * from lab2.users;
+
+create or replace function users_array()
+returns text[] as
+$$
+    declare
+        a text[];
+        b text;
+    begin
+        for b in execute 'select username from lab2.users'
+            loop
+                a := array_append(a, b);
+            end loop;
+        return a;
+    end;
+$$ language plpgsql;
+
+select users_array();

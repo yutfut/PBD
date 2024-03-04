@@ -18,8 +18,7 @@
 
 ```sql
 create or replace function function_name(value_name value_type)
-returns returns_type as
-'select count(*) into yet_value ...;'
+returns returns_type as 'select count(*) into yet_value ...;'
 language plpgsql;
 ```
 
@@ -34,6 +33,11 @@ begin
 end
 $$
 language plpgsql;
+```
+
+Параметры по умолчанию
+```sql
+create or replace function function_name(value int default 1)...
 ```
 
 >Если тело функции является одним SQL-запросом, то такая функция называется встроенной («inline»).
@@ -85,6 +89,8 @@ end if;
 
 ### 4. Использование курсора.
 
+Вместо того чтобы сразу выполнять весь запрос, есть возможность настроить курсор, инкапсулирующий запрос, и затем получать результат запроса по нескольку строк за раз. Одна из причин так делать заключается в том, чтобы избежать переполнения памяти, когда результат содержит большое количество строк.
+
 ```sql
 DECLARE
     curs1 refcursor;
@@ -93,7 +99,11 @@ DECLARE
 ```
 
 ### 5. Синтаксис и процесс выполнения рекурсивных запросов.
-   https://habr.com/ru/articles/269497/
+
+В рекурсивной части CTE обязательно должна быть стартовая часть и рекурсивная часть, разделенные словом UNION.\
+
+https://habr.com/ru/articles/269497/
+
 ```sql
 WITH RECURSIVE r AS (
     -- стартовая часть рекурсии
@@ -159,6 +169,11 @@ SELECT depname, empno, salary, avg(salary) OVER (PARTITION BY depname) FROM emps
 ```sql
 EXECUTE format('delete from lab2.users where username = %I;', usern);
 ```
+
+```sql
+execute 'select * from table where id = $1' into a using 1;
+```
+
 ### 11. Что такое обновляемое представление? Каковы его свойства? Как необновляемое представление сделать обновляемым?
 
 
