@@ -373,12 +373,6 @@ db.tasks.insertMany(
     ]
 );
 
-db.tasks.find().sort(
-    {
-        "cf.cf_points": -1
-    }
-);
-
 // кол-во документов
 
 db.tasks.count();
