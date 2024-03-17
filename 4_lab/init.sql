@@ -20,20 +20,20 @@ db.users.insertOne(
 db.users.insertMany(
     [
         {
-            "username": "username1",
-            "password": "password1",
-            "coldstart": true
+            username: "username1",
+            password: "password1",
+            coldstart: true
         },
         {
-            "username": "username2",
-            "password": "password2",
-            "coldstart": false
+            username: "username2",
+            password: "password2",
+            coldstart: false
         },
         {
-            "username": "username3",
-            "password": "password3",
-            "coldstart": true,
-            "tasks": [
+            username: "username3",
+            password: "password3",
+            coldstart: true,
+            tasks: [
                 1,2,3
             ]
         },
@@ -454,6 +454,7 @@ db.tasks.aggregate(
         {
             $group: {
                 _id: "$name"
+
 //                _id: ["$name", "$cf.cf_points"]
 //                total: {
 //                    $avg: "$cf.cf_points"
@@ -476,3 +477,32 @@ db.tasks.dropIndex("name_1");   // удаление индекса
 
 db.tasks.find().explain();
 
+// добавление элемента в массив
+
+db.users.updateOne(
+    {username: "username3"},
+    {$push: {tasks: 4}}
+)
+
+db.users.find()
+
+// агргация
+
+db.users.aggregate([
+    {
+        $sort: {
+            username: -1
+        }
+    }
+])
+
+//db.users.aggregate([
+//    {
+//        $group: {
+////            coldstart: "false",
+//            name: "$type",
+//            sum_col: {$sum: "$col"}
+////            count: { $count: {} }
+//        }
+//    }
+//])

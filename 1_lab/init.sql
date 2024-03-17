@@ -236,7 +236,8 @@ update lab1.super_table SET ch3 = array_append(ch3, 10) where 1 = any (ch3);
 -- insert into lab1.perent (id, column1) values(1,2);
 -- insert into lab1.child (id, column1, column2, column3) values(1,2,'3','4');
 
-select * from lab1.perent;
+select * from only lab1.perent;
+
 -- select * from only lab1.perent;-- CREATE TABLE lab1.perent (
 -- 	id SERIAL PRIMARY KEY,
 -- 	column1 int

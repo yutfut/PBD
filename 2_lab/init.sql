@@ -331,20 +331,23 @@ insert into lab2.range (name, price) values
 -- ранг текущей строки с пропусками; то же, что и row_number для первой родственной ей строки
 
 SELECT id, name, price,
-       rank() OVER (PARTITION BY name order by price) --DESC
+        rank() OVER (), --DESC
+        row_number() OVER (), --DESC
+        dense_rank() OVER (), --DESC
+        ntile(3) OVER () --DESC
 FROM lab2.range;
 
 -- row_number
 -- номер текущей строки в её разделе, начиная с 1
 
 SELECT id, name, price,
-       row_number() OVER (PARTITION BY name) --DESC
+       row_number() OVER (PARTITION BY price order by price) --DESC
 FROM lab2.range;
 
 -- dense_rank
 
 SELECT id, name, price,
-    dense_rank() OVER (PARTITION BY id, name, price) --DESC
+    dense_rank() OVER (PARTITION BY price) --DESC
 FROM lab2.range;
 
 -- ntile
@@ -422,6 +425,34 @@ $$
 language plpgsql;
 
 select test(1);
+
+create or replace function test_order(ch bool default false)
+returns setof int as
+$$
+    declare
+        a int;
+        b text;
+    begin
+        b := 'select id from lab2.users';
+        if ch is true then
+            return query execute b;
+--                 loop
+--                     return next a;
+--                 end loop;
+        else
+--             b := b || 'order by id desc';
+
+            return query execute concat(b, ' order by id desc');
+--                 loop
+--                  return next a;
+--                 end loop;
+        end if;
+    end;
+$$
+language plpgsql;
+
+select test_order(true);
+select test_order(false);
 
 --
 
