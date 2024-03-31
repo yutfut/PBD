@@ -16,13 +16,13 @@ services:
 #     ports:
 #       - '9042:9042'
 
-#   mongodb:
-#     image: mongo:latest
-#     environment:
-#       - MONGO_INITDB_ROOT_USERNAME=admin
-#       - MONGO_INITDB_ROOT_PASSWORD=admin
-#     ports:
-#       - '27017:27017'
+  # mongodb:
+  #   image: mongo:latest
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=admin
+  #     - MONGO_INITDB_ROOT_PASSWORD=admin
+  #   ports:
+  #     - '27017:27017'
 
   neo4j:
     image: neo4j:latest
