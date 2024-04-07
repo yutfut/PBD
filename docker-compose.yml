@@ -11,10 +11,10 @@ services:
 #     ports:
 #       - '5432:5432'
 
-#   cassandra:
-#     image: cassandra:latest
-#     ports:
-#       - '9042:9042'
+  # cassandra:
+  #   image: cassandra:latest
+  #   ports:
+  #     - '9042:9042'
 
   # mongodb:
   #   image: mongo:latest

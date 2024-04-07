@@ -65,7 +65,7 @@ create (t:task:math{
 })
 
 create (t:task:game{
-  id: 2,
+  id: 3,
   title: 'task game'
 })
 
@@ -178,3 +178,7 @@ MATCH (node:label1:label2) RETURN node
 // Удалить уазлы с несколькими лейблами
 MATCH (node:label1:label2) DELETE node
 
+// Вывести пользователей, которые занимались решением задачи, в названии которой упоминается "task"
+MATCH (u:user)-[s:Solution]->(t:task) WHERE s.solved IS NOT NULL and t.title =~ '.*task.*' RETURN u, t
+
+// Вывести в одном запросе все задачи, которые решены хотя бы одним пользователем
