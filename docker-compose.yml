@@ -1,15 +1,16 @@
 version: '3.7'
 
 services:
-
-#   postgresql:
-#     image: postgres:latest
-#     environment:
-#       POSTGRES_DB: example
-#       POSTGRES_USER: example
-#       POSTGRES_PASSWORD: example
-#     ports:
-#       - '5432:5432'
+  postgresql:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: example
+      POSTGRES_USER: example
+      POSTGRES_PASSWORD: example
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./volumes:/volumes
 
   # cassandra:
   #   image: cassandra:latest
@@ -24,10 +25,10 @@ services:
   #   ports:
   #     - '27017:27017'
 
-  neo4j:
-    image: neo4j:latest
-    environment:
-      - NEO4J_AUTH=neo4j/password
-    ports:
-      - "7474:7474"
-      - "7687:7687"
+#   neo4j:
+#     image: neo4j:latest
+#     environment:
+#       - NEO4J_AUTH=neo4j/password
+#     ports:
+#       - "7474:7474"
+#       - "7687:7687"
