@@ -9,8 +9,8 @@ services:
       POSTGRES_PASSWORD: example
     ports:
       - '5432:5432'
-    volumes:
-      - ./volumes:/volumes
+#     volumes:
+#       - ./volumes:/volumes
 
   # cassandra:
   #   image: cassandra:latest
