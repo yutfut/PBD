@@ -1,8 +1,8 @@
-DROP SCHEMA IF EXISTS lab6 CASCADE;
-CREATE SCHEMA lab6 AUTHORIZATION example;
+DROP SCHEMA IF EXISTS lab7 CASCADE;
+CREATE SCHEMA lab7 AUTHORIZATION example;
 
-DROP TABLE IF EXISTS lab6.task CASCADE;
-create table lab6.task
+DROP TABLE IF EXISTS lab7.task CASCADE;
+create table lab7.task
 (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     name VARCHAR(256) NOT NULL,
@@ -29,7 +29,7 @@ create table lab6.task
     checker text,
     checkers text[]
 );
-INSERT INTO lab6.task (name, description, public_tests, private_tests, generated_tests, difficulty, cf_contest_id, cf_index, cf_points, cf_rating, cf_tags, time_limit, memory_limit_bytes, link, short_link, name_ru, task_ru, input, output, note, master_solution, checker, checkers)
+INSERT INTO lab7.task (name, description, public_tests, private_tests, generated_tests, difficulty, cf_contest_id, cf_index, cf_points, cf_rating, cf_tags, time_limit, memory_limit_bytes, link, short_link, name_ru, task_ru, input, output, note, master_solution, checker, checkers)
 VALUES ('name1', 'Codehorses has just hosted the second Codehorses Cup. This year, the same as the previous one, organizers are giving T-shirts for the winners.', ARRAY['public_tests1', 'public_tests2'], ARRAY['private_tests1', 'private_tests2'], ARRAY['generated_tests1', 'generated_tests2'], 1, 1, 'A1B', 1, 1, ARRAY[1, 2], 1, 1, 'link', 'short_link', 'name_ru', 'task_ru', 'input', 'output', 'note', 'master_solution', 'checker', ARRAY['checker1', 'checker2']),
        ('name1', 'In the intergalactic empire Bubbledom there are N planets, of which some pairs are directly connected by two-way wormholes. There are N-1 wormholes. The wormholes are of extreme religious importance in Bubbledom, a set of planets in Bubbledom consider themselves one intergalactic kingdom if and only if any two planets in the set can reach each other by traversing the wormholes. You are given that Bubbledom is one kingdom. In other words, the network of planets and wormholes is a tree.', ARRAY['public_tests1', 'public_tests2'], ARRAY['private_tests1', 'private_tests2'], ARRAY['generated_tests1', 'generated_tests2'], 1, 1, 'A1B', 1, 1, ARRAY[1, 2], 1, 1, 'link', 'short_link', 'name_ru', 'task_ru', 'input', 'output', 'note', 'master_solution', 'checker', ARRAY['checker1', 'checker2']),
        ('name1', 'Ivan unexpectedly saw a present from one of his previous birthdays. It is array of n numbers from 1 to 200. Array is old and some numbers are hard to read. Ivan remembers that for all elements at least one of its neighbours ls not less than it, more formally:', ARRAY['public_tests1', 'public_tests2'], ARRAY['private_tests1', 'private_tests2'], ARRAY['generated_tests1', 'generated_tests2'], 1, 1, 'A1B', 1, 1, ARRAY[1, 2], 1, 1, 'link', 'short_link', 'name_ru', 'task_ru', 'input', 'output', 'note', 'master_solution', 'checker', ARRAY['checker1', 'checker2']),
@@ -44,4 +44,11 @@ SELECT 'has just hosted the second Codehorses Cup'::tsvector;
 SELECT to_tsquery('the & intergalactic & park');
 
 SELECT to_tsquery('park & intergalactic & ! cat');
+
+-- CREATE TEXT SEARCH DICTIONARY lab7.my_dict (
+--
+--     stopwords = '/volumes'
+-- )
+
+-- SELECT ts_lexize('lab7.my_dict', 'HELLO')
 
