@@ -143,4 +143,4 @@ select unnest(xpath('//body//article//div[1]//h2//a//span[contains(text(), "Chat
 select unnest(xpath('//body//article//div[1]//h2//a//span[not (contains(text(), "Яндекс"))]', xmlparse(DOCUMENT pg_read_file('/volumes/habr.xml'))));
 select unnest(xpath('//body//article//div[2]//button//span[2]/text()', xmlparse(DOCUMENT pg_read_file('/volumes/habr.xml'))));
 select unnest(xpath('count(//body//article//div[2]//button//span[2][text()>10])', xmlparse(DOCUMENT pg_read_file('/volumes/habr.xml'))));
-select unnest(xpath('//body//article//div[2]//button//span[2][text()>10]', xmlparse(DOCUMENT pg_read_file('/volumes/habr.xml'))));
+select unnest(xpath('//body//article//div[2]//button//span[2][text()>10]/text()', xmlparse(DOCUMENT pg_read_file('/volumes/habr.xml'))));
