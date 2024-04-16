@@ -1,19 +1,19 @@
 <CATALOG class=" FB_FW_ext BlitzScPluginAdapter">
     <PLANT>
-        <COMMON>Bloodroot</COMMON>
-        <BOTANICAL>Sanguinaria canadensis</BOTANICAL>
-        <ZONE>4</ZONE>
+        <COMMON a="1" b="2">Bloodroot</COMMON>
+        <BOTANICAL a = "3">Sanguinaria canadensis</BOTANICAL>
+        <ZONE c="">4</ZONE>
         <LIGHT>Mostly Shady</LIGHT>
         <PRICE>$2.44</PRICE>
         <AVAILABILITY>031599</AVAILABILITY>
     </PLANT>
-<PLANT>
-<COMMON>Columbine</COMMON>
-<BOTANICAL>Aquilegia canadensis</BOTANICAL>
-<ZONE>3</ZONE>
-<LIGHT>Mostly Shady</LIGHT>
-<PRICE>$9.37</PRICE>
-<AVAILABILITY>030699</AVAILABILITY>
+<PLANT a="1" b="3">
+    <COMMON a="3" b="2">Columbine</COMMON>
+    <BOTANICAL>Aquilegia canadensis</BOTANICAL>
+    <ZONE>3</ZONE>
+    <LIGHT>Mostly Shady</LIGHT>
+    <PRICE>$9.37</PRICE>
+    <AVAILABILITY>030699</AVAILABILITY>
 </PLANT>
 <PLANT>
 <COMMON>Marsh Marigold</COMMON>

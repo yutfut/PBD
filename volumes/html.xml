@@ -1,0 +1,26 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">hello</meta>
+        <title>d.doshik</title>
+    </head>
+    <body style="background: grey">
+        <p style="text-align: center;">
+            <img src="photo_2022-06-20%2023.59.39.jpeg" width="80%" style="margin: 8%;" alt=""/>
+            hello
+        </p>
+        <p style="text-align: center;">
+            <img src="photo_2022-06-20%2023.59.42.jpeg" width="80%" style="margin: 8%;" alt=""/>hello</p>
+        <p style="text-align: center;">
+            <img src="photo_2022-06-20%2023.59.45.jpeg" width="80%" style="margin: 8%;" alt=""/>
+            hello
+        </p>
+        <p style="text-align: center;">
+            <img src="photo_2022-06-20%2023.59.48.jpeg" width="80%" style="margin: 8%;" alt=""/>
+            hello
+        </p>
+        <p style="text-align: center;">
+            <img src="photo_2022-06-20%2023.59.50.jpeg" width="80%" style="margin: 8%;" alt=""/>
+            hello
+        </p>
+    </body>
+</html>

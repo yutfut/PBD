@@ -37,13 +37,27 @@ VALUES ('name1', 'Codehorses has just hosted the second Codehorses Cup. This yea
        ('name1', 'You are given a tree (a connected undirected graph without cycles) of n vertices. Each of the n - 1 edges of the tree is colored in either black or red.
                   You are also given an integer k. Consider sequences of k vertices. Let''s call a sequence [a_1, a_2, …, a_k] good if it satisfies the following criterion:', ARRAY['public_tests1', 'public_tests2'], ARRAY['private_tests1', 'private_tests2'], ARRAY['generated_tests1', 'generated_tests2'], 1, 1, 'A1B', 1, 1, ARRAY[1, 2], 1, 1, 'link', 'short_link', 'name_ru', 'task_ru', 'input', 'output', 'note', 'master_solution', 'checker', ARRAY['checker1', 'checker2']);
 
-SELECT to_tsvector('english', 'Codehorses has empire');
+SELECT to_tsvector('english', description) from lab7.task;
 
 SELECT 'has just hosted the second Codehorses Cup'::tsvector;
 
 SELECT to_tsquery('the & intergalactic & park');
 
-SELECT to_tsquery('park & intergalactic & ! cat');
+-- SELECT id, ts_rank(to_tsvector("document_text"), plainto_tsquery('запрос'))
+-- FROM documents_document
+-- WHERE to_tsvector("document_text") @@ plainto_tsquery('запрос')
+-- ORDER BY ts_rank(to_tsvector("document_text"), plainto_tsquery('запрос')) DESC;
+
+
+SELECT description, ts_rank(to_tsvector(description), to_tsquery('Codehorses | birthdays')) as rank  from lab7.task
+where to_tsvector(description) @@ to_tsquery('Codehorses | birthdays')
+order by rank desc;
+
+SELECT description, ts_rank(to_tsvector(description), to_tsquery('Codehorses')<->to_tsquery('park')) as rank  from lab7.task
+where to_tsvector(description) @@ (to_tsquery('Codehorses')<->to_tsquery('park'))
+order by rank desc;
+
+-- to_tsquery('park & intergalactic & ! cat')
 
 -- CREATE TEXT SEARCH DICTIONARY lab7.my_dict (
 --
